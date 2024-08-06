@@ -1,0 +1,71 @@
+openapi: 3.0.1
+info:
+  title: Spectral Linting API
+  description: API for Spectral Linting Engine.
+  version: 1.0.0
+paths:
+  /lint:
+    post:
+      summary: Run Spectral linting on provided YAML files
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileToBeLinted:
+                  type: string
+                  format: binary
+                  description: The YAML/Json file to be linted.
+                ruleset:
+                  type: string
+                  format: binary
+                  description: The YAML/Json file containing Spectral rules.
+      responses:
+        '200':
+          description: Linting results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LintingResult'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    LintingResult:
+      type: object
+      properties:
+        code:
+          type: string
+        path:
+          type: array
+          items:
+            type: string
+        message:
+          type: string
+        severity:
+          type: integer
+        range:
+          type: object
+          properties:
+            start:
+              type: object
+              properties:
+                line:
+                  type: integer
+                character:
+                  type: integer
+            end:
+              type: object
+              properties:
+                line:
+                  type: integer
+                character:
+                  type: integer
+        source:
+          type: string
