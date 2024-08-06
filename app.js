@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(fileUpload()); 
 
-app.post('/lint', async (req, res) => {
+app.post('/linter-service/lint', async (req, res) => {
   let rulesetFilePath = '';
 
   try {
