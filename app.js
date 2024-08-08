@@ -18,7 +18,27 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(fileUpload()); 
+app.use(fileUpload());
+
+// Define the constant for the result structure
+const formattedLintingResults = (results) => ({
+  count: results.length,
+  list: results.map(result => ({
+    code: result.code,
+    path: result.path,
+    message: result.message,
+    severity: result.severity,
+    range: result.range,
+    source: result.source,
+  })),
+  pagination: {
+    offset: 0,
+    limit: results.length,
+    total: results.length,
+    next: null,
+    previous: null
+  }
+});
 
 app.post('/linter-service/lint', async (req, res) => {
   let rulesetFilePath = '';
@@ -56,24 +76,7 @@ app.post('/linter-service/lint', async (req, res) => {
     const results = await spectral.run(document);
 
     // Format results
-    const formattedResults = {
-      count: results.length,
-      list: results.map(result => ({
-        code: result.code,
-        path: result.path,
-        message: result.message,
-        severity: result.severity,
-        range: result.range,
-        source: result.source,
-      })),
-      pagination: {
-        offset: 0,
-        limit: results.length,
-        total: results.length,
-        next: null,
-        previous: null
-      }
-    };
+    const formattedResults = formattedLintingResults(results);
 
     // Respond with formatted results
     res.json(formattedResults);
