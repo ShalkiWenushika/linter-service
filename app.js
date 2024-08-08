@@ -55,8 +55,28 @@ app.post('/linter-service/lint', async (req, res) => {
     // Run validation
     const results = await spectral.run(document);
 
-    // Respond with validation results
-    res.json(results);
+    // Format results
+    const formattedResults = {
+      count: results.length,
+      list: results.map(result => ({
+        code: result.code,
+        path: result.path,
+        message: result.message,
+        severity: result.severity,
+        range: result.range,
+        source: result.source,
+      })),
+      pagination: {
+        offset: 0,
+        limit: results.length,
+        total: results.length,
+        next: null,
+        previous: null
+      }
+    };
+
+    // Respond with formatted results
+    res.json(formattedResults);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred during linting.' });

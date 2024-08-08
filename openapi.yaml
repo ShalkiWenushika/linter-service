@@ -40,32 +40,70 @@ components:
     LintingResult:
       type: object
       properties:
-        code:
-          type: string
-        path:
+        count:
+          type: integer
+          description: The total number of linting results.
+        list:
           type: array
           items:
-            type: string
-        message:
-          type: string
-        severity:
-          type: integer
-        range:
+            type: object
+            properties:
+              code:
+                type: string
+                description: The linting rule code.
+              path:
+                type: array
+                items:
+                  type: string
+                description: The path to the location in the file where the issue was found.
+              message:
+                type: string
+                description: A description of the linting issue.
+              severity:
+                type: integer
+                description: The severity level of the issue (e.g., 1 for error).
+              range:
+                type: object
+                properties:
+                  start:
+                    type: object
+                    properties:
+                      line:
+                        type: integer
+                        description: The starting line number of the issue.
+                      character:
+                        type: integer
+                        description: The starting character position of the issue.
+                  end:
+                    type: object
+                    properties:
+                      line:
+                        type: integer
+                        description: The ending line number of the issue.
+                      character:
+                        type: integer
+                        description: The ending character position of the issue.
+                description: The range within the file where the issue occurs.
+              source:
+                type: string
+                description: The name of the file that was linted.
+          description: A list of linting results.
+        pagination:
           type: object
           properties:
-            start:
-              type: object
-              properties:
-                line:
-                  type: integer
-                character:
-                  type: integer
-            end:
-              type: object
-              properties:
-                line:
-                  type: integer
-                character:
-                  type: integer
-        source:
-          type: string
+            offset:
+              type: integer
+              description: The starting position of the current page.
+            limit:
+              type: integer
+              description: The maximum number of results per page.
+            total:
+              type: integer
+              description: The total number of results.
+            next:
+              type: string
+              description: The URL of the next page, if available.
+            previous:
+              type: string
+              description: The URL of the previous page, if available.
+          description: Pagination information for the results.
